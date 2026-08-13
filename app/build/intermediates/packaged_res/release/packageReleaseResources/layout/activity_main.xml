@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.iankernels.software6port.GameView
+        android:id="@+id/gameView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Настройки (Верхний левый угол) -->
+    <ImageButton
+        android:id="@+id/btnSettings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Settings"
+        android:src="@android:drawable/ic_menu_preferences" />
+
+    <!-- Выбор 4 видов оружия (Справа, ПОД МИНИКАРТОЙ) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="190dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnWeaponKnife"
+            android:layout_width="48dp"
+            android:layout_height="40dp"
+            android:backgroundTint="#AA222222"
+            android:padding="0dp"
+            android:text="KNF"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnWeaponPistol"
+            android:layout_width="48dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:backgroundTint="#AA222222"
+            android:padding="0dp"
+            android:text="PST"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnWeaponMG"
+            android:layout_width="48dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:backgroundTint="#AA222222"
+            android:padding="0dp"
+            android:text="MG"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnWeaponCG"
+            android:layout_width="48dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:backgroundTint="#AA222222"
+            android:padding="0dp"
+            android:text="CG"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Кнопка FIRE (Над кнопкой USE и со смещением вправо) -->
+    <Button
+        android:id="@+id/btnFire"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="90dp"
+        android:backgroundTint="#88880000"
+        android:text="FIRE"
+        android:textColor="#FF4444"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Кнопка USE (В самом низу, чуть левее кнопки FIRE) -->
+    <Button
+        android:id="@+id/btnAction"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="20dp"
+        android:layout_toStartOf="@id/btnFire"
+        android:backgroundTint="@color/semi_transparent"
+        android:text="USE"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

@@ -1,4 +1,0 @@
-#Thu Aug 13 23:37:00 YEKT 2026
-base.0=E\:\\TheReturned\\software_6_port_Android\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
-path.0=classes.dex
-renamed.0=classes.dex

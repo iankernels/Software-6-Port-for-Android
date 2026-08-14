@@ -17,9 +17,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Main activity for the Software 6 Port for Android.
+ *
+ * Handles the UI overlay (settings button, weapon selector, FIRE/USE buttons)
+ * and bridges user input to the GameView rendering engine.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    // Reference to the game rendering surface
     private GameView gameView;
+
+    // Persistent storage for saving/loading user preferences (quality, sensitivity, etc.)
     private SharedPreferences prefs;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -27,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Hide the system status and navigation bars for a fullscreen immersive experience
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -36,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
+        // Load the main layout which contains GameView + all overlay buttons
         setContentView(R.layout.activity_main);
 
+        // Grab references to all the UI elements defined in activity_main.xml
         gameView = findViewById(R.id.gameView);
         ImageButton btnSettings = findViewById(R.id.btnSettings);
         Button btnAction = findViewById(R.id.btnAction);
@@ -48,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnMG = findViewById(R.id.btnWeaponMG);
         Button btnCG = findViewById(R.id.btnWeaponCG);
 
+        // FIRE button — uses OnTouchListener (not OnClickListener) so we can detect
+        // both press-down (start firing) and release (stop firing) for continuous auto-fire
         if (btnFire != null) {
             btnFire.setOnTouchListener((v, event) -> {
                 switch (event.getAction()) {
@@ -64,23 +78,33 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             });
         }
+
+        // USE button — a simple click toggles the door the player is facing
         if (btnAction != null) {
             btnAction.setOnClickListener(v -> gameView.interactWithDoor());
         }
 
+        // Weapon selector buttons — each one tells GameView to switch to that weapon index
+        // Index order: 0=Knife, 1=Pistol, 2=Machine Gun, 3=Chain Gun
         if (btnKnife != null) btnKnife.setOnClickListener(v -> gameView.selectWeapon(0));
         if (btnPistol != null) btnPistol.setOnClickListener(v -> gameView.selectWeapon(1));
         if (btnMG != null) btnMG.setOnClickListener(v -> gameView.selectWeapon(2));
         if (btnCG != null) btnCG.setOnClickListener(v -> gameView.selectWeapon(3));
 
+        // Load previously saved preferences and apply them to the game engine
         prefs = getSharedPreferences("Software6Prefs", Context.MODE_PRIVATE);
         applySavedPreferences();
 
+        // Settings button — opens a dialog for graphics quality, sensitivity, minimap toggle, etc.
         if (btnSettings != null) {
             btnSettings.setOnClickListener(v -> showSettingsDialog());
         }
     }
 
+    /**
+     * Reads the persisted SharedPreferences and pushes each value into the GameView engine.
+     * Called once on startup, and again whenever the user presses "Save" in the settings dialog.
+     */
     private void applySavedPreferences() {
         int quality = prefs.getInt("quality", 1);
         float sensitivity = prefs.getFloat("sensitivity", 1.0f);
@@ -93,12 +117,20 @@ public class MainActivity extends AppCompatActivity {
         gameView.setShowPerformance(showPerf);
     }
 
+    /**
+     * Builds and shows the settings dialog using the custom layout from dialog_settings.xml.
+     * Contains:
+     *  - RadioGroup for graphics quality (Low/Medium/High)
+     *  - SeekBar for camera rotation sensitivity (0.2x to 2.2x)
+     *  - CheckBoxes to toggle minimap and FPS/RAM overlay
+     */
     private void showSettingsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_settings, null);
         builder.setView(dialogView);
 
+        // Grab all controls from the dialog layout
         RadioGroup rgQuality = dialogView.findViewById(R.id.rgQuality);
         RadioButton rbLow = dialogView.findViewById(R.id.rbLow);
         RadioButton rbMedium = dialogView.findViewById(R.id.rbMedium);
@@ -112,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Sync dialog state with currently active settings
         int curQuality = gameView.getGraphicsQuality();
         if (curQuality == 0) rbLow.setChecked(true);
         else if (curQuality == 1) rbMedium.setChecked(true);
@@ -125,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         cbMinimap.setChecked(gameView.isShowMinimap());
         cbPerformance.setChecked(gameView.isShowPerformance());
 
+        // Update the displayed sensitivity value in real-time as the user drags the slider
         sbSensitivity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -137,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setTitle("Software 6 Port Options");
         builder.setPositiveButton("Save", (dialog, which) -> {
+            // Read dialog state
             int qual = 1;
             if (rbLow.isChecked()) qual = 0;
             else if (rbHigh.isChecked()) qual = 2;
@@ -146,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
             boolean minimap = cbMinimap.isChecked();
             boolean perf = cbPerformance.isChecked();
 
+            // Persist to SharedPreferences
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("quality", qual);
             editor.putFloat("sensitivity", sens);
@@ -153,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("showPerf", perf);
             editor.apply();
 
+            // Apply live to the engine
             gameView.setGraphicsQuality(qual);
             gameView.setSensitivity(sens);
             gameView.setShowMinimap(minimap);
@@ -165,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Lifecycle hooks — ensure the game thread is running when the activity is visible
     @Override
     protected void onResume() {
         super.onResume();

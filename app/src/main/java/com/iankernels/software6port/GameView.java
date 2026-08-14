@@ -661,7 +661,6 @@ public class GameView extends SurfaceView implements Runnable {
 
         float screenAspect = (float) screenW / screenH;
 
-        // Расчет плоскости камеры для сохранения пропорций 4:3 без черных полос по бокам
         double planeLength = 0.66 * (screenAspect / (4.0 / 3.0));
         planeX = -dirY * planeLength;
         planeY = dirX * planeLength;
@@ -809,11 +808,9 @@ public class GameView extends SurfaceView implements Runnable {
 
         renderBuffer.setPixels(frameBuffer, 0, targetW, 0, 0, targetW, targetH);
 
-        // Рендерим каповое изображение на весь экран без черных рамок
         renderDstRect.set(0, 0, screenW, screenH);
         canvas.drawBitmap(renderBuffer, null, renderDstRect, null);
 
-        // Позиция джойстика
         if (joyCenterY == 0) {
             joyCenterX = screenW * 0.15f;
             joyCenterY = screenH * 0.72f;
@@ -821,7 +818,6 @@ public class GameView extends SurfaceView implements Runnable {
             joyStickY = joyCenterY;
         }
 
-        // Отрисовка элементов интерфейса без фоновых черных квадратов
         canvas.drawCircle(joyCenterX, joyCenterY, joyRadius, joyBgPaint);
         canvas.drawCircle(joyStickX, joyStickY, joyStickRadius, joyStickPaint);
 

@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         CheckBox cbMinimap = dialogView.findViewById(R.id.cbMinimap);
         CheckBox cbPerformance = dialogView.findViewById(R.id.cbPerformance);
 
-        // Безопасная проверка Nullability компонентов
         if (rbLow == null || rbMedium == null || rbHigh == null || sbSensitivity == null || tvSensitivityVal == null || cbMinimap == null || cbPerformance == null) {
             return;
         }
